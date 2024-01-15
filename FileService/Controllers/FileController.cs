@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using FileService.Entities;
 using FileService.Models;
 using FileService.Persistence;
@@ -98,8 +99,18 @@ public class FileController : BaseApiController
             .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 
         if (entity is null)
-            throw new NotImplementedException();
+            return NotFound();
 
+        var contentDisposition = new ContentDisposition
+        {
+            FileName = entity.Name,
+            Inline = true,
+        };
+        
+        //https://stackoverflow.com/questions/38897764/asp-net-core-content-disposition-attachment-inline
+        Response.Headers.Append("Content-Disposition", contentDisposition.ToString());
+        Response.Headers.Append("X-Content-Type-Options", "nosniff");
+        
         return PhysicalFile(entity.Url, entity.MimeType, entity.Name, enableRangeProcessing: true);
     }
 }
