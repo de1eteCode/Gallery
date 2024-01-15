@@ -6,7 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDatabase>(opt =>
 {
-    opt.UseInMemoryDatabase("db");
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("Database"), optNpgsql =>
+    {
+        optNpgsql.MigrationsAssembly(typeof(ApplicationDatabase).Assembly.GetName().Name);
+    });
 
 #if DEBUG
     opt.EnableSensitiveDataLogging();
@@ -22,6 +25,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
+await MigrateDatabase(app);
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -32,3 +38,13 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+
+async Task MigrateDatabase(WebApplication webApplication)
+{
+    await using var scope = webApplication.Services.CreateAsyncScope();
+
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDatabase>();
+
+    await db.Database.MigrateAsync();
+}
