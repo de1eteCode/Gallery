@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  fileservice:
+    image: fileservice
+    container_name: fileservice-microservice
+    user: root
+    ports:
+      - "1001:80"
+      - "1002:443"
+    environment:
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=123456
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp-docker.pfx
+      - ASPNETCORE_URLS=https://+;http://+;
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Database=host=fileservicedb;Port=5432;Database=Stackup;User Id=fileserver_user;Password=123456qwerty;
+      - FileStore__BaseFolder=/store
+    build:
+      context: .
+      dockerfile: FileService/Dockerfile
+    networks: 
+      - fileservice-net
+    volumes:
+      - $USERPROFILE/.aspnet/https:/https/
+      - gallery-data:/store
+    command: 
+      - chown -R root /store
+
+  fileservicedb:
+    image: "postgres:latest"
+    container_name: fileservicedb
+    ports:
+      - "2001:5432"
+    environment:
+      - POSTGRES_USER=fileserver_user
+      - POSTGRES_PASSWORD=123456qwerty
+    networks:
+      - fileservice-net
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+networks:
+  fileservice-net:
+    driver: bridge
+    
+volumes:
+  gallery-data:
+  pg-data:
