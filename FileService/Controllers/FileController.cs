@@ -35,7 +35,7 @@ public class FileController : BaseApiController
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     public async Task<Guid> Create(IFormFile file, CancellationToken cancellationToken)
     {
-        if (Directory.Exists(_fileStoreOptions.BaseFolder))
+        if (!Directory.Exists(_fileStoreOptions.BaseFolder))
             Directory.CreateDirectory(_fileStoreOptions.BaseFolder);
 
         var fileName = $"{_timeProvider.GetLocalNow().ToUnixTimeMilliseconds()}_" +
