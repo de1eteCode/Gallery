@@ -31,4 +31,14 @@ public static class DependencyInjection
             opt.AddInterceptors(sp.GetRequiredService<CreatedSaveChangesInterceptor>());
         });
     }
+
+    public static async Task MigrateDb(this IServiceProvider serviceCollection)
+    {
+        await using var scope = serviceCollection.CreateAsyncScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        if (context.Database.IsNpgsql())
+            await context.Database.MigrateAsync();
+    }
 }
