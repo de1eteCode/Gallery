@@ -4,7 +4,7 @@ using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Diagnostics;
 using WebApi.Models;
 
-namespace ReactCoreTemplate.WebApi.Utils;
+namespace WebApi.Utils;
 
 public static class ExceptionHandlerExtensions
 {
