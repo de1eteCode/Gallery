@@ -6,7 +6,7 @@ namespace Domain.FileEntities;
 /// <summary>
 /// Файт поста
 /// </summary>
-public class PostFile : FileEntity
+public class PostFile : S3FileEntity
 {
     /// <summary>
     /// Идентификатор поста
