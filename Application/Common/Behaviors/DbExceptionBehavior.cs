@@ -20,10 +20,10 @@ public class DbExceptionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
             // Нарушение ограничение внешнего ключа
             if (innerExceptionMessage.StartsWith(DbExceptionCode.ForeignKeyConstraint))
-                throw new ForeignKeyConstraintException(innerExceptionMessage);
+                throw new ForeignKeyConstraintException(innerExceptionMessage, ex);
             // Нарушение уникальности
             if (innerExceptionMessage.StartsWith(DbExceptionCode.UniqueConstraint))
-                throw new UniqueConstraintException(innerExceptionMessage);
+                throw new UniqueConstraintException(innerExceptionMessage, ex);
 
             throw;
         }

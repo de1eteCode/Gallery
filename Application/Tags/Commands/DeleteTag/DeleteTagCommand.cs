@@ -6,8 +6,14 @@ using Mediator;
 
 namespace Application.Tags.Commands.DeleteTag;
 
+/// <summary>
+/// Команда удаления сущности тег
+/// </summary>
 public record DeleteTagCommand : ICommand
 {
+    /// <summary>
+    /// Идентификатор сущности тег
+    /// </summary>
     public Guid Id { get; init; }
 }
 
@@ -26,6 +32,8 @@ public class DeleteTagCommandHandler : ICommandHandler<DeleteTagCommand>
 
         if (entity is null)
             throw new NotFoundException(nameof(Tag), command.Id);
+
+        _context.Tags.Remove(entity);
         
         await _context.SaveChangesAsync(cancellationToken);
 

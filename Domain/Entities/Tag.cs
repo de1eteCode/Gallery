@@ -1,10 +1,33 @@
 using Domain.Common.Base;
+using Domain.Common.Interfaces;
 
 namespace Domain.Entities;
 
-public class Tag : BaseEntity
+/// <summary>
+/// Тег
+/// </summary>
+public class Tag : BaseEntity, IEntitySoftDeletable
 {
-    public string Name { get; set; }
+    /// <summary>
+    /// Наименование тега
+    /// </summary>
+    public string Name { get; set; } = default!;
 
-    public List<MediaPost> Posts { get; } = new();
+    /// <summary>
+    /// Поисковый ключ
+    /// </summary>
+    public string SearchKey { get; set; } = default!;
+
+    /// <inheritdoc />
+    public bool IsDeleted { get; set; }
+    
+    /// <inheritdoc />
+    public DateTimeOffset? DeletedAt { get; set; }
+
+    // Навигационные свойства
+    
+    /// <summary>
+    /// Навигационное свойство - Посты с тегом
+    /// </summary>
+    public List<Post> Posts { get; } = new();
 }

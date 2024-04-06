@@ -1,14 +1,23 @@
 ﻿using System.Net;
+using Application.Common.Interfaces;
 
-namespace Application.Common.Exceptions
+namespace Application.Common.Exceptions;
+
+/// <summary>
+/// Ошибка: Доступ запрещен
+/// </summary>
+public class ForbiddenException : Exception, IRestException
 {
-    public class ForbiddenException : Exception
-    {
-        public int Code => (int)HttpStatusCode.Forbidden;
+    /// <inheritdoc />
+    public int Code => (int)HttpStatusCode.Forbidden;
 
-        public ForbiddenException()
-            : base("Доступ запрещен")
-        {
-        }
+    public ForbiddenException(Exception innerException)
+        : base("Доступ запрещен", innerException)
+    {
+    }
+
+    public ForbiddenException()
+        : this(null)
+    {
     }
 }

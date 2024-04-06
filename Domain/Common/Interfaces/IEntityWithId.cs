@@ -1,10 +1,6 @@
 namespace Domain.Common.Interfaces;
 
-public interface IEntityWithId<T>
-{
-    public T Id { get; }
-}
-
+/// <inheritdoc cref="IEntityWithId{T}"/>
 public interface IEntityWithId : IEntityWithId<Guid>
 {
 }

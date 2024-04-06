@@ -1,9 +1,23 @@
-﻿namespace Application.Common.Exceptions;
+﻿using System.Net;
+using Application.Common.Interfaces;
 
-public class ForeignKeyConstraintException : Exception
+namespace Application.Common.Exceptions;
+
+/// <summary>
+/// Нарушение внешнего ключа
+/// </summary>
+public class ForeignKeyConstraintException : Exception, IRestException
 {
+    /// <inheritdoc />
+    public int Code => (int)HttpStatusCode.Conflict;
+    
+    public ForeignKeyConstraintException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
+    
     public ForeignKeyConstraintException(string message)
-        : base(message)
+        : this(message, null)
     {
     }
 }

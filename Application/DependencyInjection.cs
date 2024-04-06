@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Application.Common.Behaviors;
+using AutoMapper.EquivalencyExpression;
 using FluentValidation;
 using Mediator;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,10 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
-        serviceCollection.AddAutoMapper(Assembly.GetExecutingAssembly());
+        serviceCollection.AddAutoMapper(conf =>
+        {
+            conf.AddCollectionMappers();
+        }, Assembly.GetExecutingAssembly());
         serviceCollection.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
         serviceCollection.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         serviceCollection.AddBehaviors();

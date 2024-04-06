@@ -5,8 +5,14 @@ using Mediator;
 
 namespace Application.Tags.Commands.CreateTag;
 
+/// <summary>
+/// Команда создания тега
+/// </summary>
 public record CreateTagCommand : ICommand<Guid>
 {
+    /// <summary>
+    /// Объект передачи сущности <see cref="Tag"/>
+    /// </summary>
     public TagDto Dto { get; init; }
 }
 

@@ -22,6 +22,7 @@ public static class DependencyInjection
     private static void AddDb(IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddScoped<CreatedSaveChangesInterceptor>();
+        serviceCollection.AddScoped<SoftDeleteSaveChangesInterceptor>();
         
         serviceCollection.AddDbContext<IApplicationDbContext, ApplicationDbContext>((sp, opt) =>
         {
@@ -29,6 +30,7 @@ public static class DependencyInjection
                 b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
 
             opt.AddInterceptors(sp.GetRequiredService<CreatedSaveChangesInterceptor>());
+            opt.AddInterceptors(sp.GetRequiredService<SoftDeleteSaveChangesInterceptor>());
         });
     }
 

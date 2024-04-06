@@ -1,6 +1,12 @@
 namespace Domain.Common.Interfaces;
 
+/// <summary>
+/// Созданная сущность
+/// </summary>
 public interface IEntityCreated
 {
-    public DateTime CreatedAt { get; set; }
+    /// <summary>
+    /// Дата создания
+    /// </summary>
+    public DateTimeOffset CreatedAt { get; set; }
 }

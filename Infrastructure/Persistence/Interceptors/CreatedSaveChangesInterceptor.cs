@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Infrastructure.Persistence.Interceptors;
 
+/// <summary>
+/// Перехватчик установки даты создания
+/// </summary>
 public class CreatedSaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly TimeProvider _timeProvider;
@@ -13,6 +16,7 @@ public class CreatedSaveChangesInterceptor : SaveChangesInterceptor
         _timeProvider = timeProvider;
     }
 
+    /// <inheritdoc />
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
         InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
@@ -24,6 +28,7 @@ public class CreatedSaveChangesInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
+    /// <inheritdoc />
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
         var context = eventData.Context;
@@ -34,6 +39,11 @@ public class CreatedSaveChangesInterceptor : SaveChangesInterceptor
         return base.SavingChanges(eventData, result);
     }
 
+    /// <summary>
+    /// Установка даты создания
+    /// </summary>
+    /// <param name="context">Контекст базы данных</param>
+    /// <exception cref="ArgumentOutOfRangeException">Контекст базы данных null</exception>
     private void SetCreatedDateTime(DbContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -59,7 +69,7 @@ public class CreatedSaveChangesInterceptor : SaveChangesInterceptor
 
                     if (entity.CreatedAt == default)
                     {
-                        entity.CreatedAt = _timeProvider.GetLocalNow().DateTime;
+                        entity.CreatedAt = _timeProvider.GetUtcNow();
                     }
                 }
                     break;

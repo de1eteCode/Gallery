@@ -1,7 +1,16 @@
-﻿namespace Application.Common.Exceptions;
+﻿using System.Net;
+using Application.Common.Interfaces;
 
-public class NotFoundException : Exception
+namespace Application.Common.Exceptions;
+
+/// <summary>
+/// Ошибка: Не найден объект
+/// </summary>
+public class NotFoundException : Exception, IRestException
 {
+    /// <inheritdoc />
+    public int Code => (int)HttpStatusCode.NotFound;
+    
     public NotFoundException(string message)
         : base(message)
     {

@@ -1,9 +1,17 @@
-﻿using FluentValidation.Results;
+﻿using System.Net;
+using Application.Common.Interfaces;
+using FluentValidation.Results;
 
 namespace Application.Common.Exceptions;
 
-public class ValidationException : Exception
+/// <summary>
+/// Ошибки в данных запроса
+/// </summary>
+public class ValidationException : Exception, IRestException
 {
+    /// <inheritdoc />
+    public int Code => (int)HttpStatusCode.BadRequest;
+    
     public IDictionary<string, string[]> Errors { get; }
 
     public ValidationException(string message)
