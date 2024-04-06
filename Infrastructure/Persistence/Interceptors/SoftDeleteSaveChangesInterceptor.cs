@@ -55,6 +55,7 @@ public class SoftDeleteSaveChangesInterceptor : SaveChangesInterceptor
                     {
                         SetTime(softDeletableEntity);
                         RemoveDeleteState(entry);
+                        SetDelete(softDeletableEntity);
                     }
                         break;
                     case EntityState.Added:
@@ -79,8 +80,11 @@ public class SoftDeleteSaveChangesInterceptor : SaveChangesInterceptor
                 }
             }
         }
+    }
 
-        throw new NotImplementedException();
+    private void SetDelete(IEntitySoftDeletable softDeletableEntity)
+    {
+        softDeletableEntity.IsDeleted = true;
     }
 
     private void SetTime(IEntitySoftDeletable softDeletableEntity)

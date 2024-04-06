@@ -1,3 +1,4 @@
+using Application.Common.Extensions;
 using FluentValidation;
 
 namespace Application.Tags.Commands.UpdateTag;
@@ -8,10 +9,17 @@ public class UpdateTagCommandValidator : AbstractValidator<UpdateTagCommand>
     {
         RuleFor(e => e.Dto)
             .Cascade(CascadeMode.Stop)
-            .NotNull();
-        
-        RuleFor(e => e.Dto.Name)
             .NotNull()
-            .NotEmpty();
+            .ChildRules(dto =>
+            {
+                dto.RuleFor(e => e.Name)
+                    .NotNull()
+                    .NotEmpty();
+
+                dto.RuleFor(e => e.SearchKey)
+                    .NotNull()
+                    .NotEmpty()
+                    .IsSearchKey();
+            });
     }
 }

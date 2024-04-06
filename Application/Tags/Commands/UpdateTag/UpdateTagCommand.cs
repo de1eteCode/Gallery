@@ -38,7 +38,14 @@ public class UpdateTagCommandHandler : ICommandHandler<UpdateTagCommand>
 
         _mapper.Map(command.Dto, entity);
         
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (UniqueConstraintException ex)
+        {
+            throw new BadRequestException("Поисковый ключ должен быть уникальным", ex);
+        }
 
         return Unit.Value;
     }

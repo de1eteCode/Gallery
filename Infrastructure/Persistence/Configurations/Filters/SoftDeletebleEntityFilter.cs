@@ -1,5 +1,4 @@
 using Domain.Common.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations.Filters;
@@ -16,10 +15,6 @@ public static class SoftDeletebleEntityFilter
         where TEntity : class, IEntitySoftDeletable
     {
         builder.HasQueryFilter(e => !e.IsDeleted);
-
-        // performance query
-        builder.HasIndex(e => e.IsDeleted)
-            .HasFilter($"{nameof(IEntitySoftDeletable.IsDeleted)} = 0");
         
         return builder;
     }

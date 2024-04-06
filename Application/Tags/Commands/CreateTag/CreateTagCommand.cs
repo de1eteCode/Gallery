@@ -1,3 +1,4 @@
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -32,7 +33,15 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Guid>
         var entity = _mapper.Map<Tag>(command.Dto);
 
         await _context.Tags.AddAsync(entity, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (UniqueConstraintException ex)
+        {
+            throw new BadRequestException("Поисковый ключ должен быть уникальным", ex);
+        }
 
         return entity.Id;
     }

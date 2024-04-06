@@ -1,7 +1,9 @@
 using System.Net;
 using Application.Tags.Commands.CreateTag;
 using Application.Tags.Commands.DeleteTag;
+using Application.Tags.Commands.RestoreTag;
 using Application.Tags.Commands.UpdateTag;
+using Application.Tags.Queries.GetAllTagList;
 using Application.Tags.Queries.GetTag;
 using Application.Tags.Queries.GetTagList;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ using WebApi.Common;
 using WebApi.Models;
 using GetTagVm = Application.Tags.Queries.GetTag.TagVm;
 using GetTagVmList = Application.Tags.Queries.GetTagList.TagVm;
+using GetAllTagVmList = Application.Tags.Queries.GetAllTagList.TagVm;
 using CreateTagDto = Application.Tags.Commands.CreateTag.TagDto;
 using UpdateTagDto = Application.Tags.Commands.UpdateTag.TagDto;
 
@@ -49,8 +52,8 @@ public class TagController : ApiMediatorController
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<GetTagVmList>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.InternalServerError)]
-    public async Task<IEnumerable<GetTagVmList>> GetAllList()
-        => await Mediator.Send(new GetTagListQuery());
+    public async Task<IEnumerable<GetAllTagVmList>> GetAllList()
+        => await Mediator.Send(new GetAllTagListQuery());
 
     /// <summary>
     /// Команда создания тега
@@ -88,4 +91,16 @@ public class TagController : ApiMediatorController
     [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.InternalServerError)]
     public async Task Delete(Guid id)
         => await Mediator.Send(new DeleteTagCommand { Id = id });
+
+    /// <summary>
+    /// Команда восстановления тега
+    /// </summary>
+    /// <param name="id">Идентификатор сущности</param>
+    [HttpPut]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.InternalServerError)]
+    public async Task Restore(Guid id)
+        => await Mediator.Send(new RestoreTagCommand { Id = id });
 }

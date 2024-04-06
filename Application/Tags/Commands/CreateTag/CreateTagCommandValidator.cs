@@ -1,12 +1,11 @@
-using Application.Common.Interfaces;
+using Application.Common.Extensions;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tags.Commands.CreateTag;
 
 public class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
 {
-    public CreateTagCommandValidator(IApplicationDbContext context)
+    public CreateTagCommandValidator()
     {
         RuleFor(e => e.Dto)
             .Cascade(CascadeMode.Stop)
@@ -20,12 +19,7 @@ public class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
                 dto.RuleFor(e => e.SearchKey)
                     .NotNull()
                     .NotEmpty()
-                    .Must(e => !e.Contains(' '))
-                    .WithMessage("Поисковый ключ не должен содержать пробелы")
-                    .MustAsync(async (value, ctx) =>
-                        await context.Tags.AnyAsync(s =>
-                            !string.Equals(s.SearchKey, value, StringComparison.OrdinalIgnoreCase), ctx))
-                    .WithMessage("Поисковый ключ должен быть уникальным");
+                    .IsSearchKey();
             });
     }
 }

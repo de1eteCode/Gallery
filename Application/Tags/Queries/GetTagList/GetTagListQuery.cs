@@ -13,12 +13,12 @@ public record GetTagListQuery : IQuery<IEnumerable<TagVm>>
 {
 }
 
-public class GetTagQueryHandler : IQueryHandler<GetTagListQuery, IEnumerable<TagVm>>
+public class GetTagListQueryHandler : IQueryHandler<GetTagListQuery, IEnumerable<TagVm>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetTagQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetTagListQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
