@@ -1,9 +1,13 @@
 ﻿using Application.Common.Interfaces;
+using Infrastructure.Common.Interfaces;
+using Infrastructure.Models;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Minio;
 
 namespace Infrastructure;
 
@@ -13,13 +17,17 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         serviceCollection.AddSingleton(TimeProvider.System);
+
+        serviceCollection.AddScoped<IFileService, FileService>();
+        serviceCollection.Configure<UploadFileOptions>(configuration.GetSection("UploadFileOptions"));
         
-        AddDb(serviceCollection, configuration);
+        serviceCollection.AddDb(configuration);
+        serviceCollection.AddMinioS3(configuration);
 
         return serviceCollection;
     }
 
-    private static void AddDb(IServiceCollection serviceCollection, IConfiguration configuration)
+    private static void AddDb(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddScoped<CreatedSaveChangesInterceptor>();
         serviceCollection.AddScoped<SoftDeleteSaveChangesInterceptor>();
@@ -34,6 +42,22 @@ public static class DependencyInjection
         });
     }
 
+    private static void AddMinioS3(this IServiceCollection serviceCollection, IConfiguration configuration)
+    {
+        var options = configuration.GetSection("Minio").Get<MinioOptions>() ?? throw new Exception();
+        
+        serviceCollection.Configure<MinioOptions>(configuration.GetSection("Minio"));
+        serviceCollection.AddScoped<IS3Service, S3Service>();
+        serviceCollection.AddScoped<IS3MinioBucketSeeder, S3Service>();
+
+        serviceCollection.AddMinio(client =>
+        {
+            client.WithEndpoint(options.ApiEndpoint)
+                .WithCredentials(options.AccessKey, options.SecretKey)
+                .WithSSL(options.Secure);
+        });
+    }
+
     public static async Task MigrateDb(this IServiceProvider serviceCollection)
     {
         await using var scope = serviceCollection.CreateAsyncScope();
@@ -42,5 +66,14 @@ public static class DependencyInjection
 
         if (context.Database.IsNpgsql())
             await context.Database.MigrateAsync();
+    }
+
+    public static async Task SeedS3(this IServiceProvider serviceProvider)
+    {
+        await using var scope = serviceProvider.CreateAsyncScope();
+
+        var s3Seeder = scope.ServiceProvider.GetRequiredService<IS3MinioBucketSeeder>();
+
+        await s3Seeder.SeedBucket();
     }
 }

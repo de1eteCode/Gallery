@@ -9,11 +9,6 @@ namespace Domain.Entities;
 /// </summary>
 public class Post : BaseEntity, IEntitySoftDeletable
 {
-    /// <summary>
-    /// Файл поста
-    /// </summary>
-    public PostFile File { get; set; }
-
     /// <inheritdoc />
     public bool IsDeleted { get; set; }
     
@@ -26,4 +21,9 @@ public class Post : BaseEntity, IEntitySoftDeletable
     /// Навигационное свойство - Теги поста
     /// </summary>
     public List<Tag> Tags { get; } = new();
+
+    /// <summary>
+    /// Навигационное свойство - Файл поста
+    /// </summary>
+    public PostFile File { get; set; } = default!;
 }

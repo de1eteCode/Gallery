@@ -7,7 +7,7 @@ namespace Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
-    public DbSet<FileEntity> Files { get; set; }
+    public DbSet<S3FileEntity> S3Files { get; set; }
     
     public DbSet<Tag> Tags { get; }
     public DbSet<Post> Posts { get; }

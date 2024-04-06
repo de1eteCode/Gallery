@@ -13,7 +13,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
     }
 
-    public DbSet<FileEntity> Files { get; set; }
+    public DbSet<S3FileEntity> S3Files { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<PostFile> PostFiles { get; set; }
