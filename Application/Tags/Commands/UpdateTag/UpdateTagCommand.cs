@@ -7,8 +7,14 @@ using Mediator;
 
 namespace Application.Tags.Commands.UpdateTag;
 
+/// <summary>
+/// Команда обновления тега
+/// </summary>
 public record UpdateTagCommand : ICommand
 {
+    /// <summary>
+    /// Объект передачи сущности <see cref="Tag"/>
+    /// </summary>
     public TagDto Dto { get; init; }
 }
 

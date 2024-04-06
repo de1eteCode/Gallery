@@ -4,10 +4,10 @@ using AutoMapper.QueryableExtensions;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Tags.Queries.GetTagList;
+namespace Application.Tags.Queries.GetAllTagList;
 
 /// <summary>
-/// Запрос получения списка сущностей тег
+/// Запрос получения списка всех сущностей тег
 /// </summary>
 public record GetTagListQuery : IQuery<IEnumerable<TagVm>>
 {
@@ -26,6 +26,7 @@ public class GetTagQueryHandler : IQueryHandler<GetTagListQuery, IEnumerable<Tag
 
     public async ValueTask<IEnumerable<TagVm>> Handle(GetTagListQuery listQuery, CancellationToken cancellationToken)
         => await _context.Tags
+            .IgnoreQueryFilters()
             .ProjectTo<TagVm>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 }

@@ -5,11 +5,18 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Mediator;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tags.Queries.GetTag;
 
+/// <summary>
+/// Запрос получения сущности тег
+/// </summary>
 public record GetTagQuery : IQuery<TagVm>
 {
+    /// <summary>
+    /// Идентификатор сущности
+    /// </summary>
     public Guid Id { get; init; }
 }
 
@@ -27,6 +34,7 @@ public class GetTagQueryHandler : IQueryHandler<GetTagQuery, TagVm>
     public async ValueTask<TagVm> Handle(GetTagQuery query, CancellationToken cancellationToken)
     {
         var vm = await _context.Tags
+            .IgnoreQueryFilters()
             .ProjectTo<TagVm>(_mapper.ConfigurationProvider)
             .FindByIdAsync(query.Id, cancellationToken);
 

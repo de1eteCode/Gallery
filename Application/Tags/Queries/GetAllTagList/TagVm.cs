@@ -1,7 +1,7 @@
 using Application.Common.Mappings;
 using Domain.Entities;
 
-namespace Application.Tags.Queries.GetTagList;
+namespace Application.Tags.Queries.GetAllTagList;
 
 /// <summary>
 /// Модель представления сущности тег
