@@ -10,7 +10,7 @@ namespace Application.Posts.Queries.GetPostGrid;
 /// <summary>
 /// Запрос таблицы постов
 /// </summary>
-public class GetPostGridQuery : IRequest<Paging<PostVm>>
+public class GetPostGridQuery : IQuery<Paging<PostVm>>
 {
     /// <summary>
     /// Модель запроса таблицы постов
@@ -18,7 +18,7 @@ public class GetPostGridQuery : IRequest<Paging<PostVm>>
     public required PostGridifyQuery Gridify { get; init; }
 }
 
-public class GetPostGridQueryHandler : IRequestHandler<GetPostGridQuery, Paging<PostVm>>
+public class GetPostGridQueryHandler : IQueryHandler<GetPostGridQuery, Paging<PostVm>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -29,23 +29,23 @@ public class GetPostGridQueryHandler : IRequestHandler<GetPostGridQuery, Paging<
         _mapper = mapper;
     }
 
-    public async ValueTask<Paging<PostVm>> Handle(GetPostGridQuery request, CancellationToken cancellationToken)
+    public async ValueTask<Paging<PostVm>> Handle(GetPostGridQuery query, CancellationToken cancellationToken)
     {
-        var searchKeys = request.Gridify.SearchKeys?
+        var searchKeys = query.Gridify.SearchKeys?
             .ToLower()
             .Split(' ')
             .Where(e => !string.IsNullOrEmpty(e)) ?? Enumerable.Empty<string>();
 
-        var query = _context.Posts
+        var queryData = _context.Posts
             .Where(e => searchKeys.All(s => e.Tags.Any(tag => tag.SearchKey == s)))
             .OrderByDescending(e => e.CreatedAt)
             .ProjectTo<PostVm>(_mapper.ConfigurationProvider);
 
-        var count = await query.CountAsync(cancellationToken);
+        var count = await queryData.CountAsync(cancellationToken);
 
-        query = query
-            .ApplyPaging(request.Gridify);
+        queryData = queryData
+            .ApplyPaging(query.Gridify);
 
-        return new Paging<PostVm>(count, await query.ToListAsync(cancellationToken));
+        return new Paging<PostVm>(count, await queryData.ToListAsync(cancellationToken));
     }
 }

@@ -17,7 +17,7 @@ public record GetTagQuery : IQuery<TagVm>
     /// <summary>
     /// Идентификатор сущности
     /// </summary>
-    public Guid Id { get; init; }
+    public required Guid Id { get; init; }
 }
 
 public class GetTagQueryHandler : IQueryHandler<GetTagQuery, TagVm>

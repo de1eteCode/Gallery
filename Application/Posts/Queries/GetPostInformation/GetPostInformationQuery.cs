@@ -12,7 +12,7 @@ namespace Application.Posts.Queries.GetPostInformation;
 /// <summary>
 /// Запрос получения информации о сущности поста
 /// </summary>
-public class GetPostInformationQuery : IRequest<PostVm>
+public class GetPostInformationQuery : IQuery<PostVm>
 {
     /// <summary>
     /// Идентификатор
@@ -20,7 +20,7 @@ public class GetPostInformationQuery : IRequest<PostVm>
     public required Guid Id { get; init; }
 }
 
-public class GetPostInformationQueryHandler : IRequestHandler<GetPostInformationQuery, PostVm>
+public class GetPostInformationQueryHandler : IQueryHandler<GetPostInformationQuery, PostVm>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;

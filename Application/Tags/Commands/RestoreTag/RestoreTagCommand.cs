@@ -15,7 +15,7 @@ public record RestoreTagCommand : ICommand
     /// <summary>
     /// Идентификатор сущности тег
     /// </summary>
-    public Guid Id { get; init; }
+    public required Guid Id { get; init; }
 }
 
 public class RestoreTagCommandHandler : ICommandHandler<RestoreTagCommand>

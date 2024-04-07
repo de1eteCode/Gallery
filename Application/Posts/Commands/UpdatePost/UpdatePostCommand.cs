@@ -13,13 +13,13 @@ namespace Application.Posts.Commands.UpdatePost;
 /// <summary>
 /// Команда создания сущности пост
 /// </summary>
-public class UpdatePostCommand : IRequest
+public class UpdatePostCommand : ICommand
 {
     /// <inheritdoc cref="PostDto"/>
     public required PostDto Dto { get; init; }
 }
 
-public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand>
+public class UpdatePostCommandHandler : ICommandHandler<UpdatePostCommand>
 {
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _context;

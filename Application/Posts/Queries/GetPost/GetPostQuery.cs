@@ -11,7 +11,7 @@ namespace Application.Posts.Queries.GetPost;
 /// <summary>
 /// Запрос получения сущности поста
 /// </summary>
-public class GetPostQuery : IRequest<PostVm>
+public class GetPostQuery : IQuery<PostVm>
 {
     /// <summary>
     /// Идентификатор
@@ -19,7 +19,7 @@ public class GetPostQuery : IRequest<PostVm>
     public required Guid Id { get; init; }
 }
 
-public class GetPostQueryHandler : IRequestHandler<GetPostQuery, PostVm>
+public class GetPostQueryHandler : IQueryHandler<GetPostQuery, PostVm>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -30,12 +30,12 @@ public class GetPostQueryHandler : IRequestHandler<GetPostQuery, PostVm>
         _mapper = mapper;
     }
 
-    public async ValueTask<PostVm> Handle(GetPostQuery request, CancellationToken cancellationToken)
+    public async ValueTask<PostVm> Handle(GetPostQuery query, CancellationToken cancellationToken)
     {
         var vm = await _context.Posts
             .ProjectTo<PostVm>(_mapper.ConfigurationProvider)
-            .FindByIdAsync(request.Id, cancellationToken);
+            .FindByIdAsync(query.Id, cancellationToken);
 
-        return vm ?? throw new NotFoundException(nameof(Post), request.Id);
+        return vm ?? throw new NotFoundException(nameof(Post), query.Id);
     }
 }

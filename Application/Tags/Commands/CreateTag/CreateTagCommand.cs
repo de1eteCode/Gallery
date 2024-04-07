@@ -14,7 +14,7 @@ public record CreateTagCommand : ICommand<Guid>
     /// <summary>
     /// Объект передачи сущности <see cref="Tag"/>
     /// </summary>
-    public TagDto Dto { get; init; }
+    public required TagDto Dto { get; init; }
 }
 
 public class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Guid>

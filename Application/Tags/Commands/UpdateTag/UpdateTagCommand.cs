@@ -15,7 +15,7 @@ public record UpdateTagCommand : ICommand
     /// <summary>
     /// Объект передачи сущности <see cref="Tag"/>
     /// </summary>
-    public TagDto Dto { get; init; }
+    public required TagDto Dto { get; init; }
 }
 
 public class UpdateTagCommandHandler : ICommandHandler<UpdateTagCommand>

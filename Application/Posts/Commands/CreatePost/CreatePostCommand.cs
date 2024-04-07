@@ -11,13 +11,13 @@ namespace Application.Posts.Commands.CreatePost;
 /// <summary>
 /// Команда создания сущности пост
 /// </summary>
-public class CreatePostCommand : IRequest<Guid>
+public class CreatePostCommand : ICommand<Guid>
 {
     /// <inheritdoc cref="PostDto"/>
-    public required PostDto Dto { get; set; }
+    public required PostDto Dto { get; init; }
 }
 
-public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, Guid>
+public class CreatePostCommandHandler : ICommandHandler<CreatePostCommand, Guid>
 {
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _context;
@@ -33,12 +33,12 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, Guid>
         _fileService = fileService;
     }
 
-    public async ValueTask<Guid> Handle(CreatePostCommand request, CancellationToken cancellationToken)
+    public async ValueTask<Guid> Handle(CreatePostCommand command, CancellationToken cancellationToken)
     {
-        var entity = _mapper.Map<Post>(request.Dto);
-        var tags = await GetTagsAsync(request.Dto.TagIds, cancellationToken);
+        var entity = _mapper.Map<Post>(command.Dto);
+        var tags = await GetTagsAsync(command.Dto.TagIds, cancellationToken);
 
-        await using var fileDto = await _fileService.ToFileEntityDto(request.Dto.File, cancellationToken);
+        await using var fileDto = await _fileService.ToFileEntityDto(command.Dto.File, cancellationToken);
 
         var (objectName, etag) = await _s3Service.UploadAsync(fileDto, cancellationToken);
 
