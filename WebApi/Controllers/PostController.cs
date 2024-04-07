@@ -5,7 +5,9 @@ using Application.Posts.Commands.RestorePost;
 using Application.Posts.Commands.UpdatePost;
 using Application.Posts.Queries.DownloadPostFile;
 using Application.Posts.Queries.GetPost;
+using Application.Posts.Queries.GetPostGrid;
 using Application.Posts.Queries.GetPostInformation;
+using Gridify;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 using WebApi.Models;
@@ -13,6 +15,7 @@ using CreatePostDto = Application.Posts.Commands.CreatePost.PostDto;
 using UpdatePostDto = Application.Posts.Commands.UpdatePost.PostDto;
 using GetPostVm = Application.Posts.Queries.GetPost.PostVm;
 using GetPostInformationVm = Application.Posts.Queries.GetPostInformation.PostVm;
+using GetPostGridVm = Application.Posts.Queries.GetPostGrid.PostVm;
 
 namespace WebApi.Controllers;
 
@@ -92,6 +95,18 @@ public class PostController : ApiMediatorController
     [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.InternalServerError)]
     public async Task<GetPostInformationVm> GetInformation(Guid id)
         => await Mediator.Send(new GetPostInformationQuery { Id = id });
+
+    /// <summary>
+    /// Запрос получения таблицы сущностей постов
+    /// </summary>
+    /// <param name="gridify">Модель</param>
+    /// <returns>Пост</returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(Paging<GetPostGridVm>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.InternalServerError)]
+    public async Task<Paging<GetPostGridVm>> GetGrid([FromQuery] PostGridifyQuery gridify)
+        => await Mediator.Send(new GetPostGridQuery { Gridify = gridify });
     
     /// <summary>
     /// Команда скачивания файла поста
