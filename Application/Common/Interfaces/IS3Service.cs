@@ -20,8 +20,9 @@ public interface IS3Service
     /// </summary>
     /// <param name="fileDto">Данные о файле</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    /// <returns>Наименование объекта</returns>
-    public Task<string> UploadAsync(FileEntityDto fileDto, CancellationToken cancellationToken = default);
+    /// <returns>Наименование объекта и ETag</returns>
+    public Task<(string objectName, string etag)> UploadAsync(FileEntityDto fileDto,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удаление объекта

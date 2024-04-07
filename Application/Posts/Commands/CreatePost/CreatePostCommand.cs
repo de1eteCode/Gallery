@@ -40,10 +40,11 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, Guid>
 
         await using var fileDto = await _fileService.ToFileEntityDto(request.Dto.File, cancellationToken);
 
-        var objectName = await _s3Service.UploadAsync(fileDto, cancellationToken);
+        var (objectName, etag) = await _s3Service.UploadAsync(fileDto, cancellationToken);
 
         entity.File = _fileService.ToS3FileEntity<PostFile>(fileDto);
         entity.File.ObjectName = objectName;
+        entity.File.Etag = etag;
         entity.Tags.AddRange(tags);
 
         await _context.Posts.AddAsync(entity, cancellationToken);

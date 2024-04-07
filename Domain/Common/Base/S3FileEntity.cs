@@ -24,4 +24,12 @@ public abstract class S3FileEntity : BaseEntity
     /// Размер файла
     /// </summary>
     public long Length { get; set; }
+
+    /// <summary>
+    /// Тег сущности, котороый представляет собой хеш объекта
+    /// </summary>
+    /// <remarks>
+    /// https://docs.aws.amazon.com/AmazonS3/latest/API/API_Object.html
+    /// </remarks>
+    public string Etag { get; set; } = default!;
 }
