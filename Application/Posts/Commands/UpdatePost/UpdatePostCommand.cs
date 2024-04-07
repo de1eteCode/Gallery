@@ -61,12 +61,13 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand>
         
         await using var fileDto = await _fileService.ToFileEntityDto(dtoFile, cancellationToken);
 
-        var objectName = await _s3Service.UploadAsync(fileDto, cancellationToken);
+        var (objectName, etag) = await _s3Service.UploadAsync(fileDto, cancellationToken);
 
         var old = entity.File;
 
         entity.File = _fileService.ToS3FileEntity<PostFile>(fileDto);
         entity.File.ObjectName = objectName;
+        entity.File.Etag = etag;
 
         _context.PostFiles.RemoveIfExist(old);
         

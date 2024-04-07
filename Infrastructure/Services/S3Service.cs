@@ -44,7 +44,7 @@ public class S3Service : IS3Service, IS3MinioBucketSeeder
     }
 
     /// <inheritdoc />
-    public async Task<string> UploadAsync(FileEntityDto fileDto, CancellationToken cancellationToken = default)
+    public async Task<(string objectName, string etag)> UploadAsync(FileEntityDto fileDto, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(fileDto);
         ArgumentNullException.ThrowIfNull(fileDto.Data);
@@ -64,7 +64,7 @@ public class S3Service : IS3Service, IS3MinioBucketSeeder
             .PutObjectAsync(putObject, cancellationToken)
             .ConfigureAwait(false);
         
-        return response.ObjectName;
+        return (response.ObjectName, response.Etag);
     }
 
     /// <inheritdoc />
