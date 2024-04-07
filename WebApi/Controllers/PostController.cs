@@ -4,11 +4,15 @@ using Application.Posts.Commands.DeletePost;
 using Application.Posts.Commands.RestorePost;
 using Application.Posts.Commands.UpdatePost;
 using Application.Posts.Queries.DownloadPostFile;
+using Application.Posts.Queries.GetPost;
+using Application.Posts.Queries.GetPostInformation;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 using WebApi.Models;
 using CreatePostDto = Application.Posts.Commands.CreatePost.PostDto;
 using UpdatePostDto = Application.Posts.Commands.UpdatePost.PostDto;
+using GetPostVm = Application.Posts.Queries.GetPost.PostVm;
+using GetPostInformationVm = Application.Posts.Queries.GetPostInformation.PostVm;
 
 namespace WebApi.Controllers;
 
@@ -65,6 +69,30 @@ public class PostController : ApiMediatorController
     public async Task Restore(Guid id)
         => await Mediator.Send(new RestorePostCommand { Id = id });
 
+    /// <summary>
+    /// Запрос получения поста
+    /// </summary>
+    /// <param name="id">Идентификатор сущности</param>
+    /// <returns>Пост</returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(GetPostVm), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.InternalServerError)]
+    public async Task<GetPostVm> Get(Guid id)
+        => await Mediator.Send(new GetPostQuery { Id = id });
+
+    /// <summary>
+    /// Запрос получения информации о посте
+    /// </summary>
+    /// <param name="id">Идентификатор сущности</param>
+    /// <returns>Пост</returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(GetPostInformationVm), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorResponseVm), (int)HttpStatusCode.InternalServerError)]
+    public async Task<GetPostInformationVm> GetInformation(Guid id)
+        => await Mediator.Send(new GetPostInformationQuery { Id = id });
+    
     /// <summary>
     /// Команда скачивания файла поста
     /// </summary>
